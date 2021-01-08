@@ -264,6 +264,9 @@ public class OverlayService extends Service{//implements View.OnTouchListener, V
 //        private final int[] viewHeight = new int[1];
         private int viewWidth;
         private int viewHeight;
+        private Point mWindowPos = new Point(0, 0); //最初に表示される位置
+        private Point mTouchPoint = new Point();  //タッチされる位置
+
         public OnFrameMovingListener(View v){
             X = 0; Y = 0;
 //            int loc[] = new int[2];
@@ -331,26 +334,35 @@ public class OverlayService extends Service{//implements View.OnTouchListener, V
                     Log.d("debug", "("+X+","+Y+") → ("+x+","+y+")");
                     // ACTION_MOVEでの位置
                     // performCheckを入れろと警告が出るので
-                    v.performClick();
-//                    int dx = x - X;
-//                    int dy = y - Y;
-                    // TODO:動きがキモい
-//                    params.x = dx + left - Dx;
-//                    params.y = dy + top - Dy;
-//                    X = x;
-//                    Y = y;
+//                    v.performClick();
+////                    int dx = x - X;
+////                    int dy = y - Y;
+//                    // TODO:動きがキモい
+////                    params.x = dx + left - Dx;
+////                    params.y = dy + top - Dy;
+////                    X = x;
+////                    Y = y;
+////
+////                    left = params.x;
+////                    top = params.y;
+////                    windowManager.updateViewLayout(root_view, params);
+////                    v.setText(str);
+//                    WindowManager.LayoutParams[] p = new WindowManager.LayoutParams[1];
+//                    p[0] = params;
+//                    convertCoordinateFrom(p, event, dx, dy);
+//                    windowManager.updateViewLayout(root_view, p[0]);
 //
-//                    left = params.x;
-//                    top = params.y;
-//                    windowManager.updateViewLayout(root_view, params);
-//                    v.setText(str);
+////                    convertCoordinateFrom(params, event, v);
+////                    windowManager.updateViewLayout(root_view,params);
+//                    break;
                     WindowManager.LayoutParams[] p = new WindowManager.LayoutParams[1];
                     p[0] = params;
-                    convertCoordinateFrom(p, event, dx, dy);
+                    //タッチ位置から描画位置の算出
+                    mWindowPos.x = x - mTouchPoint.x;
+                    mWindowPos.y = y - mTouchPoint.y;
+                    p[0].x = mWindowPos.x;
+                    p[0].y = mWindowPos.y;
                     windowManager.updateViewLayout(root_view, p[0]);
-
-//                    convertCoordinateFrom(params, event, v);
-//                    windowManager.updateViewLayout(root_view,params);
                     break;
                 case MotionEvent.ACTION_DOWN:
                     // nothing to do
